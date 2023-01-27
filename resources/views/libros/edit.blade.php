@@ -32,7 +32,12 @@
             </div>
             <div class="mb-3">
                 <label for="autor_id" class="form-label">Autor</label>
-                <input type="text" class="form-control" id="autor_id" value="{{ $libro->autor_id }}" name="autor_id" aria-descr>
+                
+                <select class="form-control" name="autor_id">
+                    @foreach ($autor as $item)
+                        <option value="{{ $item->id }}"  >{{ $item->name }}</option>
+                    @endforeach
+                </select>
             </div>
                    
             <br>

@@ -7,9 +7,10 @@
         <div class="card-body">
             <strong>Dereivados <h4>Bienvenido Administrador</h4></strong>
             <a href="{{ route('libros.create') }}" class="btn btn-outline-success float-right">
-                Nueva derivacion
+                Nueva libro
             </a>
         </div>
+        {{$libros}}
     </div>
 @stop
 
@@ -35,47 +36,25 @@
                         <td>{{ $item->title}}</td>
                         <td>{{ $item->category}}</td>
                         <td>{{ $item->address}}</td>
-                        <td>{{ $item->autor_id}}</td>
+                        <td>{{ $item->name}}</td>
                         <td>
                             <a href="{{ route('libros.edit', $item) }}"  class="btn btn-outline-primary">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <button class="btn btn-outline-danger">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
+                            <form action="{{ route('libros.destroy', $item) }}" method="POST" class="form-eliminar">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-outline-danger">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
                         </td>
                         
                     </tr>
                     @endforeach
                 </tbody>
             </table>
-            <div class="container mt-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-                    Open modal
-                </button>
-            </div>
-            <!-- The Modal -->
-            <div class="modal" id="myModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">Modal Heading</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            Modal body..
-                        </div>
-
-                        <!-- Modal footer -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
 @stop
@@ -97,6 +76,37 @@
             var id = document.getElementById('nro')
             console.log(id);
         }
+    </script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if(session('eliminar')=='ok')
+    <script>
+        Swal.fire(
+                'Eliminado!',
+                'la Persona ha sido eliminada.',
+                'success'
+                )
+    </script>    
+    @endif
+    <script>
+        $('.form-eliminar').submit(function(e){
+            e.preventDefault();
+            Swal.fire({
+            title: 'estas seguro?',
+            text: "los datos de la persona, se eliminaran!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar!',
+            cancelButtonText:'Cancelar'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                
+                this.submit()
+            }
+            })
+        })
     </script>
     <script> console.log('Hi!'); </script>
     {{--Datatables--}}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Libro;
 use App\Http\Requests\StoreLibroRequest;
 use App\Http\Requests\UpdateLibroRequest;
+use App\Models\Autor;
 
 class LibroController extends Controller
 {
@@ -15,8 +16,16 @@ class LibroController extends Controller
      */
     public function index()
     {
-        //
-        $libros = Libro::all();
+        //SELECT l.id, a.name, l.title , a.id FROM libros l INNER JOIN autors a ON l.id = a.id WHERE a.deleted_at is not null;
+        //SELECT a.name FROM libros l INNER JOIN autors a ON l.id = a.id;
+        $libros = Libro::join("autors","autors.id", "=", "libros.autor_id")
+                    ->select("libros.id","name","title","category","autor_id","address")
+                    //->where("autors.deleted_at", "is", "null")
+                    ->get();
+
+        
+
+        //$libros = Libro::all();
         return view('libros.index', compact('libros'));
     }
 
@@ -28,8 +37,9 @@ class LibroController extends Controller
     public function create()
     {
         //
+        $autor = Autor::all();
         $libro = Libro::all();
-        return view('libros.create', compact('libro',));
+        return view('libros.create', compact('libro', 'autor'));
     }
 
     /**
@@ -72,7 +82,8 @@ class LibroController extends Controller
     public function edit(Libro $libro)
     {
         //
-        return view('libros.edit', compact('libro'));  
+        $autor = Autor::all();
+        return view('libros.edit', compact('libro', 'autor'));  
     }
 
     /**
@@ -87,7 +98,7 @@ class LibroController extends Controller
         //
         $validated = $request->validated();
         $libro->update($request->all());
-        return redirect('/libro');
+        return redirect('/libros');
     }
 
     /**
